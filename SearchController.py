@@ -1,32 +1,24 @@
 import os
 import pickle
 from spellchecker import SpellChecker
-import re
 from BM25 import BM25
 from nltk.corpus import stopwords
 from sklearn.feature_extraction.text import TfidfVectorizer
 from pathlib import Path
 from nltk.tokenize import word_tokenize
+from preProcess import preProcess
 
 
 checker = SpellChecker(language='en')
 
-stored_folder = Path(os.path.abspath('')).parent.parent / "data" / "processed" / "cleaned_df.pkl"
+stored_folder = Path(os.path.abspath('')) / "data" / "processed" / "cleaned_df.pkl"
 recipe = pickle.load(open(stored_folder, 'rb'))
 
 
-def preProcess(s):
-    s = re.sub(r'[^A-Za-z]', ' ', s)
-    s = re.sub(r'\s+', ' ', s)
-    s = word_tokenize(s)
-    text = ' '.join(s)
-    return text
-
-
 class ManualIndexer:
-    def __init__(self, recipe_data):
-        self.recipe_data = recipe_data
-        self.stored_folder = Path(os.path.abspath('')).parent.parent / "data" / "model/"
+    def __init__(self):
+        self.recipe_data = recipe
+        self.stored_folder = Path(os.path.abspath('')) / "data" / "model/"
         self.stored_file = 'manual_indexer.pkl'
         if os.path.isfile(self.stored_folder / self.stored_file):
             with open(self.stored_folder / self.stored_file, 'rb') as f:
@@ -67,6 +59,6 @@ class ManualIndexer:
 
 
 if __name__ == '__main__':
-    manual_indexer = ManualIndexer(recipe)
+    manual_indexer = ManualIndexer()
     query_res = manual_indexer.query("carrot cake")
     print(query_res)
