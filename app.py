@@ -1,7 +1,7 @@
 import time
 from flask import Flask, request
 from SearchController import ManualIndexer
-from utils import preProcess
+from preProcess import preProcess
 
 app = Flask(__name__)
 app.manual_indexer = ManualIndexer()
