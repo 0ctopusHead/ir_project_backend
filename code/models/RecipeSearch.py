@@ -49,15 +49,24 @@ class ManualIndexer:
             pickle.dump(self.__dict__, f)
 
     def query(self, q):
-        return_score_list = self.bm25.transform(q)
+        corrected_query = self.spell_corrct(q)
+        print(corrected_query)
+        return_score_list = self.bm25.transform(corrected_query)
         hit = (return_score_list > 0).sum()
         rank = return_score_list.argsort()[::-1][:hit]
         results = self.df.iloc[rank].copy().reset_index(drop=True)
         results['score'] = return_score_list[rank]
         return results
 
+    def spell_corrct(self, query):
+        tokens = word_tokenize(query)
+        corrected_tokens = [checker.correction(token) for token in tokens]
+        corrected_tokens = [token for token in corrected_tokens if token is not None]  # Filter out None values
+        corrected_query = ' '.join(corrected_tokens)
+        return corrected_query
+
 
 if __name__ == '__main__':
     manual_indexer = ManualIndexer(recipe)
-    query_res = manual_indexer.query("crab")
+    query_res = manual_indexer.query("carrot cake")
     print(query_res)
