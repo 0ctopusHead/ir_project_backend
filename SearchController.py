@@ -46,7 +46,7 @@ class ManualIndexer:
         return_score_list = self.bm25.transform(corrected_query)
         hit = (return_score_list > 0).sum()
         rank = return_score_list.argsort()[::-1][:hit]
-        results = self.df.iloc[rank].copy().reset_index(drop=True)
+        results = self.recipe_data.iloc[rank].copy().reset_index(drop=True)
         results['score'] = return_score_list[rank]
         return results
 

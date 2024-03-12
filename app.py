@@ -6,6 +6,7 @@ from sqlalchemy_utils.functions import database_exists, create_database
 from SearchController import ManualIndexer
 
 app = Flask(__name__)
+app.manual_indexer = ManualIndexer()
 CORS(app, resources={r'/*': {'origins': '*'}})
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:045689123@127.0.0.1:3306/ir_pj'
