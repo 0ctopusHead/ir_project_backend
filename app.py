@@ -1,9 +1,11 @@
 import time
 from flask import Flask, request
+from spellchecker import SpellChecker
 from flask_cors import CORS
 from models.database import db
 from sqlalchemy_utils.functions import database_exists, create_database
 from SearchController import ManualIndexer
+from UserController import UserController
 
 app = Flask(__name__)
 app.manual_indexer = ManualIndexer()
@@ -19,6 +21,8 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
+checker = SpellChecker(language='en')
+
 
 @app.route('/search', methods=['GET'])
 def search():
@@ -26,7 +30,7 @@ def search():
     response_object = {'status': 'success'}
     argList = request.args.to_dict(flat=False)
     query_term = argList['query'][0]
-
+    corrected_query = app.manual_indexer.spell_corrct(query_term)
     results = app.manual_indexer.query(query_term)
     end = time.time()
     total_hit = len(results)
@@ -34,10 +38,15 @@ def search():
 
     response_object['total_hit'] = total_hit
     response_object['results'] = results_df.to_dict('records')
-    response_object['elapse'] = end-start
+    response_object['elapse'] = end - start
+    response_object['corrected_query'] = corrected_query
     return response_object
+
+
+@app.route('/login', methods=['POST'])
+def user_login():
+    return UserController.login()
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-    

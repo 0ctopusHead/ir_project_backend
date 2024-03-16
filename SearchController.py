@@ -43,7 +43,7 @@ class ManualIndexer:
     def query(self, q):
         corrected_query = self.spell_corrct(q)
         print(corrected_query)
-        return_score_list = self.bm25.transform(corrected_query)
+        return_score_list = self.bm25.transform(q)
         hit = (return_score_list > 0).sum()
         rank = return_score_list.argsort()[::-1][:hit]
         results = self.recipe_data.iloc[rank].copy().reset_index(drop=True)
