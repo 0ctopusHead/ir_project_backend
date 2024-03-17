@@ -1,6 +1,4 @@
 from .database import db
-from sqlalchemy import ARRAY
-from sqlalchemy import String
 
 
 class User(db.Model):

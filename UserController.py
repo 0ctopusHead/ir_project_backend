@@ -3,6 +3,7 @@ import jwt
 from flask import request, jsonify
 import bcrypt
 from models.user import User
+from models.folder import Folder
 import datetime
 
 db = SQLAlchemy()
@@ -21,9 +22,10 @@ class UserController:
                     token = jwt.encode(
                         {'user': user_serialize, 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7)},
                         'Bearer')
-                    return jsonify({'user': user_serialize, 'token': token}), 200
+                    return jsonify({'user': user_serialize, 'access_token': token}), 200
                 raise
             except:
                 return jsonify({'message': 'username or password is incorrect'}), 401
         except:
             return jsonify({'message': 'The request body required username, password'}), 400
+
