@@ -38,8 +38,9 @@ class Bookmark(db.Model):
     review_count = db.Column(db.Integer)
     user_review = db.Column(db.Integer)
     folder_id = db.Column(db.Integer, db.ForeignKey('folder.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, folder_id, author_id, author_name, image, name, recipe_category, recipe_id, recipe_ingredient, recipe_instruction, review_count, user_review):
+    def __init__(self, user_id,folder_id, author_id, author_name, image, name, recipe_category, recipe_id, recipe_ingredient, recipe_instruction, review_count, user_review):
         self.author_id = author_id
         self.author_name = author_name
         self.image = image
@@ -51,6 +52,8 @@ class Bookmark(db.Model):
         self.review_count = review_count
         self.user_review = user_review
         self.folder_id = folder_id
+        self.user_id = user_id
+
     @property
     def serialize(self):
         return {
@@ -65,7 +68,8 @@ class Bookmark(db.Model):
             'recipe_instruction': self.recipe_instruction,
             'review_count': self.review_count,
             'user_review': self.user_review,
-            'folder_id': self.folder_id
+            'folder_id': self.folder_id,
+            'user_id': self.user_id
         }
 
     @staticmethod
