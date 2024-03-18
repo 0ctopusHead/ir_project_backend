@@ -161,14 +161,14 @@ def get_recommend(user_id):
     user_df = pd.DataFrame({
         'user_id': [bookmark.user_id for bookmark in user_df],
         'recipe_id': [bookmark.recipe_id for bookmark in user_df],
-        'rating': [bookmark.user_review for bookmark in user_df]
+        'rating': [bookmark.user_review for bookmark in user_df],
+        'author_id': [bookmark.author_id for bookmark in user_df]
     })
     if user_df.empty:
         return jsonify({'error': 'User not found'}), 404
 
     user_df = RecommendController.make_user_feature(user_df)
-    recipe_df = recipe
-    top_recommendations = RecommendController.predict(user_df, 10, recipe_df)
+    top_recommendations = RecommendController.predict(user_df, 10)
 
     # Check for NaN values in the DataFrame
     if top_recommendations.isnull().values.any():

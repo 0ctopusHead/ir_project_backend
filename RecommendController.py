@@ -50,10 +50,9 @@ class RecommendController:
         return df
 
     @staticmethod
-    def predict(user_df, top_k, recipe):
-        user_recipe_df = recipe.merge(user_df, left_on="RecipeId", right_on="recipe_id")
+    def predict(user_df, top_k):
+        user_recipe_df = recipe.merge(user_df, left_on="AuthorId", right_on="author_id")
         category_unique_values = recipe['RecipeCategory'].dropna().unique().tolist()
-        print(category_unique_values)
         user_recipe_df = make_category(user_recipe_df, category_unique_values)
         excludes_category = list(np.array(category_unique_values)[np.nonzero([user_recipe_df[category_unique_values].sum(axis=0) < 1])[1]])
 
@@ -63,7 +62,6 @@ class RecommendController:
         features += category_unique_values
 
         pred_df = user_recipe_df.copy()
-        print(pred_df)
         pred_df = pred_df.loc[pred_df[excludes_category].sum(axis=1) == 0]
 
         for col in user_df.columns:
@@ -71,7 +69,6 @@ class RecommendController:
                 pred_df[col] = user_df[col].values[0]
 
         preds = model.predict(pred_df[features])
-        print(preds)
         top_k_idx = np.argsort(preds)[::-1][:top_k]
         recommend_df = pred_df.iloc[top_k_idx].reset_index(drop=True)
         print(recommend_df)
